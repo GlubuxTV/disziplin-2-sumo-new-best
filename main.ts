@@ -1,33 +1,17 @@
-input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-    if ((0 as any) == (4 as any)) {
-        if (maqueen.Ultrasonic(PingUnit.Centimeters) <= 20) {
-            maqueen.writeLED(maqueen.LED.LEDRight, maqueen.LEDswitch.turnOn)
-            maqueen.writeLED(maqueen.LED.LEDLeft, maqueen.LEDswitch.turnOn)
-            maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, 255)
-            basic.pause(4000)
-            maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, 255)
-            basic.pause(200)
-            maqueen.motorStop(maqueen.Motors.M1)
-            basic.pause(500)
-            maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, 255)
-            basic.pause(200)
-            maqueen.motorStop(maqueen.Motors.All)
-            maqueen.writeLED(maqueen.LED.LEDRight, maqueen.LEDswitch.turnOff)
-            maqueen.writeLED(maqueen.LED.LEDLeft, maqueen.LEDswitch.turnOff)
-        }
-    }
-})
 input.onButtonPressed(Button.A, function () {
+    status_music = 0
     music.setVolume(0)
 })
 input.onButtonPressed(Button.B, function () {
+    status_music = 1
     music.setVolume(255)
 })
 let fehrnsicht = 0
 let status = 0
-let status_music = 1
+let status_music = 0
 let strip = neopixel.create(DigitalPin.P15, 24, NeoPixelMode.RGB)
 strip.showColor(neopixel.colors(NeoPixelColors.Yellow))
+maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, 255)
 basic.forever(function () {
     if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1 || maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
         status = 3
@@ -36,8 +20,11 @@ basic.forever(function () {
         maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, 255)
         basic.pause(100)
         maqueen.motorStop(maqueen.Motors.M1)
-        basic.pause(1000)
+        basic.pause(1200)
         maqueen.motorStop(maqueen.Motors.All)
+        maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, 255)
+        maqueen.motorStop(maqueen.Motors.All)
+        basic.pause(150)
         strip.showColor(neopixel.colors(NeoPixelColors.Yellow))
         status = 4
     } else {
@@ -105,7 +92,7 @@ basic.forever(function () {
         fehrnsicht = 0
         while (fehrnsicht == 0) {
             maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, 30)
-            if (maqueen.Ultrasonic(PingUnit.Centimeters) <= 30) {
+            if (maqueen.Ultrasonic(PingUnit.Centimeters) <= 70) {
                 fehrnsicht = 1
                 basic.pause(100)
                 maqueen.motorStop(maqueen.Motors.All)
